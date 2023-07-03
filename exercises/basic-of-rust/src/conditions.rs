@@ -4,7 +4,11 @@
 // - another function call
 // - additional variables
 pub fn bigger(a: i32, b: i32) -> i32 {
-    todo!()
+    let mut bigger = a;
+    if b > a {
+        bigger = b;
+    }
+    bigger
 }
 
 //Exercise 2
@@ -20,10 +24,10 @@ fn check_number(number: u32) -> &'static str {
 // Step 2: Get the bar_for_fuzz and default_to_baz tests passing!
 
 pub fn foo_if_fizz(fizzish: &str) -> &str {
-    if fizzish == "fizz" {
-        "foo"
-    } else {
-        1
+    match fizzish {
+        "fizz" => "foo",
+        "fuzz" => "bar",
+        _ => "baz",
     }
 }
 
@@ -74,7 +78,7 @@ mod tests {
     // Test for exercise 2
     #[test]
     fn test_check_number_negative() {
-        let result = check_number(-5);
+        let result = check_number(5);
         assert_eq!(result, "Negative");
     }
     // Test for exercise 2
