@@ -7,19 +7,31 @@ enum MessageOne {
     Write(String),
     ChangeColor(i32, i32, i32),
 }
-fn show_message(msg: MessageOne) {
-    println!("{}", msg);
+impl std::fmt::Display for MessageOne {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        match self {
+            MessageOne::Quit => write!(f, "Quit"),
+            MessageOne::Move { x, y } => write!(f, "Move to ({}, {})", x, y),
+            MessageOne::ChangeColor(r, g, b) => write!(f, "Change color to ({}, {}, {})", r, g, b),
+            _ => write!(f, "Quit"),
+        }
+    }
 }
+impl MessageOne {
+    fn show_message(msg: MessageOne) {
+        println!("{}", msg);
+    }
 
-fn exercise1() {
-    let msgs: __ = [
-        MessageOne::Quit,
-        MessageOne::Move { x: 1, y: 3 },
-        MessageOne::ChangeColor(255, 255, 0),
-    ];
+    fn exercise1() {
+        let msgs: [MessageOne; 3] = [
+            MessageOne::Quit,
+            MessageOne::Move { x: 1, y: 3 },
+            MessageOne::ChangeColor(255, 255, 0),
+        ];
 
-    for msg in msgs {
-        show_message(msg)
+        for msg in msgs {
+            MessageOne::show_message(msg);
+        }
     }
 }
 
@@ -29,6 +41,10 @@ fn exercise1() {
 // Run tests
 enum Message {
     // TODO: implement the message variant types based on their usage below
+    ChangeColor(u8, u8, u8),
+    Echo(String),
+    Move(Point),
+    Quit,
 }
 
 struct Point {
@@ -62,13 +78,19 @@ impl State {
     fn process(&mut self, message: Message) {
         // TODO: create a match expression to process the different message variants
         // Remember: When passing a tuple as a function argument, you'll need extra parentheses: fn function((t, u, p, l, e))
+        match message {
+            Message::ChangeColor(r, g, b) => self.change_color((r, g, b)),
+            Message::Echo(s) => self.echo(s),
+            Message::Move(p) => self.move_position(p),
+            Message::Quit => self.quit(),
+        }
     }
 }
-
 
 // Exercise 3
 // Fix the errors
 // Run tests
+#[derive(Debug, PartialEq)]
 enum Direction {
     North,
     East,
@@ -79,11 +101,13 @@ enum Direction {
 impl Direction {
     fn opposite(&self) -> Direction {
         match self {
-            //TODO
+            Direction::North => Direction::South,
+            Direction::East => Direction::West,
+            Direction::South => Direction::North,
+            _ => Direction::East,
         }
     }
 }
-
 
 // Exercise 4
 // Implement logic :
@@ -100,9 +124,12 @@ enum Operation {
 fn perform_operation(operation: Operation, num1: f64, num2: f64) -> f64 {
     match operation {
         // TODO
+        Operation::Add => num1 + num2,
+        Operation::Subtract => num1 - num2,
+        Operation::Multiply => num1 * num2,
+        _ => num1 / num2,
     }
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -152,8 +179,5 @@ mod tests {
 
         let divide_result = perform_operation(Operation::Divide, 12.0, 3.0);
         assert_eq!(divide_result, 4.0);
-
     }
-
 }
-
