@@ -1,45 +1,51 @@
-// Exercise 1 
+use std::vec;
+
+// Exercise 1
 // Implement struct Point to make it work.
 // Make it compile
+struct Position<T, U> {
+    x: T,
+    y: U,
+}
 fn exercise1() {
     let integer = Position { x: 5, y: 10 };
     let float = Position { x: 1.0, y: 4.0 };
 }
 
-
-
 // Exercise 2
 // Modify this struct to make the code work
 // Make it compile
-struct Point<T> {
+struct Point<T, U> {
     x: T,
-    y: T,
+    y: U,
 }
 
 fn exercise2() {
     // DON'T modify this code.
-    let p = Point{x: 5, y : "hello".to_string()};
+    let p = Point {
+        x: 5,
+        y: "hello".to_string(),
+    };
 }
-
-
 
 // Exercise 3
 // Make it compile
 // Add generic for Val to make the code work, DON'T modify the code in `main`.
-struct Val {
-    val: f64,
+struct Val<T> {
+    val: T,
 }
 
-impl Val {
-    fn value(&self) -> &f64 {
+impl<T> Val<T> {
+    fn value(&self) -> &T {
         &self.val
     }
 }
 
-
 fn exercise3() {
-    let x = Val{ val: 3.0 };
-    let y = Val{ val: "hello".to_string()};
+    let x = Val { val: 3.0 };
+    let y = Val {
+        val: "hello".to_string(),
+    };
     println!("{}, {}", x.value(), y.value());
 }
 
@@ -49,23 +55,40 @@ fn exercise3() {
 // Implementing logic
 // Run tests
 
-fn find_max<T>(collection: &[T]) -> Option<&T> {
-    todo!()
+fn find_max<T: PartialOrd>(collection: &[T]) -> Option<&T> {
+    if collection.is_empty() {
+        return None;
+    }
+    let mut max_value = &collection[0];
+    for item in collection {
+        if item > max_value {
+            max_value = item;
+        }
+    }
+    Some(&max_value)
 }
 
-// Exercise 5 
+// Exercise 5
 // Reverse the elements in a collection
-// Make it compile 
-// Run tests 
-fn reverse_collection<T>(collection: &[T]) {
-    todo!()
+// Make it compile
+// Run tests
+fn reverse_collection<T>(collection: &mut [T]) {
+    let len = collection.len();
+    let half_len = len / 2;
+    for i in 0..half_len {
+        collection.swap(i, len - 1 - i);
+    }
 }
-
 
 // Exercise 6
 // Function to check if a collection contains a specific value
-fn contains_value<T>(collection: &[T], value: &T) -> bool {
-    todo!()
+fn contains_value<T: PartialEq>(collection: &[T], value: &T) -> bool {
+    for element in collection {
+        if element == value {
+            return true;
+        }
+    }
+    false
 }
 
 // Unit tests
@@ -140,5 +163,4 @@ mod tests {
         let empty: Vec<i32> = Vec::new();
         assert_eq!(contains_value(&empty, &5), false);
     }
-
 }
